@@ -1,0 +1,12 @@
+{
+  "name": "plataforma-de-cursos-puc",
+  "version": "1.0.0",
+  "description": "Plataforma de Cursos PUC.",
+  "main": "main.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node main.mjs"
+  },
+  "author": "Ronaldo Oliveira",
+  "license": "ISC"
+}
