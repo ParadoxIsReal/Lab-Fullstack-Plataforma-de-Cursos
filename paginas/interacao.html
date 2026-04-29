@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acompanhamento — Plataforma de Cursos PUC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <style>
+    body { background-color: #f8f9fa; }
+
+    /* Header warning escuro */
+    .bg-warning { background-color: #ffc107; color: #fff; }
+
+    /* Tabs */
+    .nav-tabs .nav-link.active { font-weight: 600; border-bottom: 3px solid #ffc107; color: #856404; }
+    .nav-tabs .nav-link { color: #495057; }
+
+    /* Card de filtro */
+    .filtro-card {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Badge status matrícula */
+    .badge-andamento { background-color: #0dcaf0; color: #fff; }
+    .badge-concluido { background-color: #198754; color: #fff; }
+
+    .instrucao-filtro {
+      text-align: center;
+      padding: 2rem 0;
+      color: #6c757d;
+    }
+    .instrucao-filtro .icone { font-size: 2rem; margin-bottom: 0.5rem; }
+
+    .table thead th { white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="bg-warning-dark py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0 fw-bold">Plataforma de Cursos PUC</h4>
+        <small class="opacity-75">Módulo de Acompanhamento</small>
+      </div>
+      <a href="../index.html" class="btn btn-outline-light btn-sm">← Voltar ao Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="container mt-4">
+    <ul class="nav nav-tabs mb-4" id="tabAcompanhamento">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabMatriculas">Matrículas</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabProgresso">Progresso</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabAvaliacoes">Avaliações</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ===================== ABA MATRÍCULAS ===================== -->
+      <div class="tab-pane fade show active" id="tabMatriculas">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Matrículas</h5>
+          <button class="btn btn-warning btn-sm fw-semibold" onclick="window.abrirModal('modalMatricula')">+ Nova Matrícula</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Aluno</th>
+                <th>Curso</th>
+                <th>Data Matrícula</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyMatriculas">
+              <tr><td colspan="6" class="text-center text-muted">Nenhuma matrícula registrada.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ABA PROGRESSO ===================== -->
+      <div class="tab-pane fade" id="tabProgresso">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Progresso de Aulas</h5>
+          <button class="btn btn-warning btn-sm fw-semibold" onclick="window.abrirModal('modalProgresso')">+ Registrar Progresso</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Aluno</th>
+                <th>Aula</th>
+                <th>Status</th>
+                <th>Data de Conclusão</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyProgresso">
+              <tr><td colspan="5" class="text-center text-muted">Nenhum progresso registrado.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ABA AVALIAÇÕES ===================== -->
+      <div class="tab-pane fade" id="tabAvaliacoes">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Avaliações</h5>
+          <button class="btn btn-warning btn-sm fw-semibold" onclick="window.abrirModal('modalAvaliacao')">+ Nova Avaliação</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Aluno</th>
+                <th>Curso</th>
+                <th style="width:120px">Nota</th>
+                <th>Comentário</th>
+                <th>Data</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyAvaliacoes">
+              <tr><td colspan="6" class="text-center text-muted">Nenhuma avaliação registrada.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /container -->
+
+
+  <!-- ========== MODAL MATRÍCULA ========== -->
+  <div class="modal fade" id="modalMatricula" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-warning-dark">
+          <h5 class="modal-title text-white">Nova Matrícula</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroMatricula" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Aluno <span class="text-danger">*</span></label>
+            <select id="matUsuario" class="form-select">
+              <option value="">Selecione aluno...</option>
+            </select>
+            <div class="form-text">Instrutores não aparecem nesta lista após seleção.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Curso <span class="text-danger">*</span></label>
+            <select id="matCurso" class="form-select">
+              <option value="">Selecione curso...</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Data da Matrícula <span class="text-danger">*</span></label>
+            <input type="date" id="matData" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-warning fw-semibold" onclick="ctrlSalvarMatricula()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL PROGRESSO ========== -->
+  <div class="modal fade" id="modalProgresso" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-warning-dark">
+          <h5 class="modal-title text-white">Registrar Progresso</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroProgresso" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Aluno <span class="text-danger">*</span></label>
+            <select id="progUsuario" class="form-select">
+              <option value="">Selecione aluno...</option>
+            </select>
+            <div class="form-text">Apenas alunos com matrícula ativa são listados.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Aula <span class="text-danger">*</span></label>
+            <select id="progAula" class="form-select">
+              <option value="">Selecione aula...</option>
+            </select>
+            <div class="form-text">Aulas disponíveis conforme os cursos do aluno.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Data de Conclusão <span class="text-danger">*</span></label>
+            <input type="date" id="progData" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-warning fw-semibold" onclick="ctrlSalvarProgresso()">Registrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL AVALIAÇÃO ========== -->
+  <div class="modal fade" id="modalAvaliacao" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-warning-dark">
+          <h5 class="modal-title text-white">Nova Avaliação</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroAvaliacao" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Aluno <span class="text-danger">*</span></label>
+            <select id="avalUsuario" class="form-select">
+              <option value="">Selecione aluno...</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Curso <span class="text-danger">*</span></label>
+            <select id="avalCurso" class="form-select">
+              <option value="">Selecione curso...</option>
+            </select>
+            <div class="form-text">Apenas cursos em que o aluno está matriculado.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nota <span class="text-danger">*</span></label>
+            <select id="avalNota" class="form-select">
+              <option value="">Selecione...</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Comentário</label>
+            <textarea id="avalComentario" class="form-control" rows="3" placeholder="Opcional..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Data da Avaliação <span class="text-danger">*</span></label>
+            <input type="date" id="avalData" class="form-control" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-warning fw-semibold" onclick="ctrlSalvarAvaliacao()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="toastFeedback" class="toast align-items-center text-white border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMensagem"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { popularModalMatricula, ctrlSalvarMatricula, ctrlRenderMatriculas, ctrlConcluirMatricula, ctrlExcluirMatricula } from '../controle/MatriculaControle.mjs';
+    import { popularModalProgresso, ctrlSalvarProgresso, ctrlRenderProgresso, ctrlExcluirProgresso } from '../controle/ProgressoControle.mjs';
+    import { popularModalAvaliacao, ctrlSalvarAvaliacao, ctrlRenderAvaliacoes, ctrlExcluirAvaliacao } from '../controle/AvaliacaoControle.mjs';
+    import { UsuarioServico } from '../servico/UsuarioServico.mjs';
+    import { CursoServico }   from '../servico/CursoServico.mjs';
+    import { AulaServico }    from '../servico/AulaServico.mjs';
+
+    const _usuSvc  = new UsuarioServico();
+    const _curSvc  = new CursoServico();
+    const _aulaSvc = new AulaServico();
+
+    // ── Helpers globais ──────────────────────────────────────────────
+    window.abrirModal  = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
+    window.fecharModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide();
+
+    window.mostrarErro = (id, msg) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('d-none');
+    };
+    window.limparErro = (id) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.add('d-none'); }
+    };
+
+    window.mostrarToast = (msg, sucesso = true) => {
+      const toast = document.getElementById('toastFeedback');
+      toast.className = `toast align-items-center text-white border-0 ${sucesso ? 'bg-success' : 'bg-danger'}`;
+      document.getElementById('toastMensagem').textContent = msg;
+      bootstrap.Toast.getOrCreateInstance(toast, { delay: 3000 }).show();
+    };
+
+    window.formatarData = (data) => {
+      if (!data) return '-';
+      return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+    };
+
+    window.hoje = () => new Date().toISOString().split('T')[0];
+
+    window.popularSelectOpts = (selectId, lista, fnValor, fnLabel, labelVazio = '') => {
+      const el = document.getElementById(selectId);
+      if (!el) return;
+      const valorAtual = el.value;
+      el.innerHTML = labelVazio !== '' ? `<option value="">${labelVazio}</option>` : '';
+      lista.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value       = fnValor(item);
+        opt.textContent = fnLabel(item);
+        el.appendChild(opt);
+      });
+      if (valorAtual) el.value = valorAtual;
+    };
+
+    // Helpers de nome usados nos renders
+    window.getNomeUsuario = (id) => _usuSvc.listar().find(u => Number(u.ID_Usuario) === Number(id))?.NomeCompleto ?? '-';
+    window.getNomeCurso   = (id) => _curSvc.listar().find(c => Number(c.ID_Curso)   === Number(id))?.Titulo       ?? '-';
+    window.getNomeAula    = (id) => _aulaSvc.listar().find(a => Number(a.ID_Aula)   === Number(id))?.Titulo       ?? '-';
+
+    window.renderDashboard = () => {};
+
+    // ── Expor controles no window ────────────────────────────────────
+    window.ctrlSalvarMatricula  = ctrlSalvarMatricula;
+    window.ctrlRenderMatriculas = ctrlRenderMatriculas;
+    window.ctrlConcluirMatricula = ctrlConcluirMatricula;
+    window.ctrlExcluirMatricula  = ctrlExcluirMatricula;
+
+    window.ctrlSalvarProgresso  = ctrlSalvarProgresso;
+    window.ctrlRenderProgresso  = ctrlRenderProgresso;
+    window.ctrlExcluirProgresso = ctrlExcluirProgresso;
+
+    window.ctrlSalvarAvaliacao  = ctrlSalvarAvaliacao;
+    window.ctrlRenderAvaliacoes = ctrlRenderAvaliacoes;
+    window.ctrlExcluirAvaliacao = ctrlExcluirAvaliacao;
+
+    // ── Popular modais ao abrir ──────────────────────────────────────
+    document.getElementById('modalMatricula').addEventListener('show.bs.modal', popularModalMatricula);
+    document.getElementById('modalProgresso').addEventListener('show.bs.modal', popularModalProgresso);
+    document.getElementById('modalAvaliacao').addEventListener('show.bs.modal', popularModalAvaliacao);
+
+    // ── Trocar de aba ────────────────────────────────────────────────
+    document.querySelectorAll('#tabAcompanhamento button[data-bs-toggle="tab"]').forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (e) => {
+        const target = e.target.dataset.bsTarget;
+        if (target === '#tabMatriculas') ctrlRenderMatriculas();
+        if (target === '#tabProgresso')  ctrlRenderProgresso();
+        if (target === '#tabAvaliacoes') ctrlRenderAvaliacoes();
+      });
+    });
+
+    // ── Render inicial ───────────────────────────────────────────────
+    ctrlRenderMatriculas();
+  </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Negócio — Plataforma de Cursos PUC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <style>
+    body { background-color: #f8f9fa; }
+
+    /* Header */
+    .bg-danger { background-color: #dc3545; color: #fff; }
+
+    /* Tabs */
+    .nav-tabs .nav-link.active { font-weight: 600; border-bottom: 3px solid #dc3545; color: #a71d2a; }
+    .nav-tabs .nav-link { color: #495057; }
+
+    /* Cards de plano */
+    .card-plano { transition: transform 0.15s, box-shadow 0.15s; }
+    .card-plano:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(220,53,69,.18); }
+    .card-plano .card-header {
+      background-color: #dc3545;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+    .card-plano .preco {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #a71d2a;
+      line-height: 1.1;
+    }
+    .card-plano .duracao {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-top: 0.2rem;
+    }
+
+    /* Checkout summary card */
+    #checkoutSummary {
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      background: #fff;
+      min-height: 60px;
+    }
+    #checkoutSummary .table th { width: 40%; color: #6c757d; font-weight: 500; }
+
+    /* Tabelas */
+    .table thead th { white-space: nowrap; }
+    code.small { background: #f8d7da; color: #842029; padding: 0.1em 0.35em; border-radius: 0.25rem; }
+
+    .empty-state { text-align: center; padding: 2.5rem 0; color: #6c757d; }
+    .empty-state .icone { font-size: 2.2rem; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="bg-danger-dark py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0 fw-bold">Plataforma de Cursos PUC</h4>
+        <small class="opacity-75">Módulo de Negócio</small>
+      </div>
+      <a href="../index.html" class="btn btn-outline-light btn-sm">← Voltar ao Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="container mt-4">
+    <ul class="nav nav-tabs mb-4" id="tabNegocio">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabPlanos">Planos</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabAssinaturas">Assinaturas</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabPagamentos">Pagamentos</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ===================== ABA PLANOS ===================== -->
+      <div class="tab-pane fade show active" id="tabPlanos">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Planos Disponíveis</h5>
+          <div class="d-flex gap-2">
+            <button class="btn btn-danger btn-sm" onclick="ctrlNovoPlano()">+ Novo Plano</button>
+            <button class="btn btn-outline-danger btn-sm" onclick="window.abrirModal('modalCheckout')">
+              🛒 Novo Checkout
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid de cards -->
+        <div class="row g-3" id="gridPlanos">
+          <div class="col-12">
+            <div class="empty-state">
+              Nenhum plano cadastrado.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABA ASSINATURAS ===================== -->
+      <div class="tab-pane fade" id="tabAssinaturas">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Assinaturas Ativas</h5>
+          <button class="btn btn-danger btn-sm" onclick="window.abrirModal('modalCheckout')">
+            🛒 Novo Checkout
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Usuário</th>
+                <th>Plano</th>
+                <th>Início</th>
+                <th>Vencimento</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyAssinaturas">
+              <tr><td colspan="5" class="text-center text-muted">Nenhuma assinatura.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ABA PAGAMENTOS ===================== -->
+      <div class="tab-pane fade" id="tabPagamentos">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Histórico de Pagamentos</h5>
+          <button class="btn btn-danger btn-sm" onclick="window.abrirModal('modalCheckout')">
+            🛒 Novo Checkout
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>#Assinatura</th>
+                <th>Valor Pago</th>
+                <th>Método</th>
+                <th>ID Transação</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="bodyPagamentos">
+              <tr><td colspan="5" class="text-center text-muted">Nenhum pagamento.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /container -->
+
+
+  <!-- ========== MODAL PLANO ========== -->
+  <div class="modal fade" id="modalPlano" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger-dark">
+          <h5 class="modal-title text-white">Novo Plano</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroPlano" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nome <span class="text-danger">*</span></label>
+            <input type="text" id="plNome" class="form-control" placeholder="Ex: Plano Mensal, Plano Anual..." />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Descrição</label>
+            <textarea id="plDesc" class="form-control" rows="2" placeholder="Descrição opcional do plano"></textarea>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Preço (R$) <span class="text-danger">*</span></label>
+              <input type="number" id="plPreco" class="form-control" placeholder="0,00" min="0" step="0.01" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Duração (meses) <span class="text-danger">*</span></label>
+              <input type="number" id="plDuracao" class="form-control" value="1" min="1" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-danger" onclick="ctrlSalvarPlano()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL CHECKOUT ========== -->
+  <div class="modal fade" id="modalCheckout" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-danger-dark">
+          <h5 class="modal-title text-white">Checkout — Nova Assinatura</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroCheckout" class="alert alert-danger d-none"></div>
+
+          <div class="row g-3">
+            <!-- Coluna esquerda: formulário -->
+            <div class="col-md-6">
+              <h6 class="fw-bold text-danger mb-3">Dados da Assinatura</h6>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Usuário <span class="text-danger">*</span></label>
+                <select id="ckUsuario" class="form-select" onchange="ctrlAtualizarResumoCheckout()">
+                  <option value="">Selecione usuario...</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Plano <span class="text-danger">*</span></label>
+                <select id="ckPlano" class="form-select" onchange="ctrlAtualizarResumoCheckout()">
+                  <option value="">Selecione plano...</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Data de Início <span class="text-danger">*</span></label>
+                <input type="date" id="ckDataInicio" class="form-control" onchange="ctrlAtualizarResumoCheckout()" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Método de Pagamento <span class="text-danger">*</span></label>
+                <select id="ckMetodo" class="form-select">
+                  <option value="">Selecione...</option>
+                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                  <option value="Cartão de Débito">Cartão de Débito</option>
+                  <option value="PIX">PIX</option>
+                  <option value="Boleto">Boleto</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Coluna direita: resumo -->
+            <div class="col-md-6">
+              <h6 class="fw-bold text-danger mb-3">Resumo do Pedido</h6>
+              <div id="checkoutSummary">
+                <div class="card-body text-muted small">Selecione usuario, plano e data para ver o resumo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-danger fw-semibold" onclick="ctrlSalvarCheckout()">
+            Confirmar Pagamento
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="toastFeedback" class="toast align-items-center text-white border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMensagem"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { ctrlNovoPlano, ctrlEditarPlano, ctrlSalvarPlano, ctrlRenderPlanos, ctrlExcluirPlano } from '../controle/PlanoControle.mjs';
+    import { ctrlRenderAssinaturas, ctrlExcluirAssinatura } from '../controle/AssinaturaControle.mjs';
+    import { popularModalCheckout, ctrlAtualizarResumoCheckout, ctrlSalvarCheckout, ctrlRenderPagamentos } from '../controle/PagamentoControle.mjs';
+    import { UsuarioServico } from '../servico/UsuarioServico.mjs';
+    import { PlanoServico }   from '../servico/PlanoServico.mjs';
+
+    const _usuSvc  = new UsuarioServico();
+    const _plaSvc  = new PlanoServico();
+
+    // ── Helpers globais ──────────────────────────────────────────────
+    window.abrirModal  = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
+    window.fecharModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide();
+
+    window.mostrarErro = (id, msg) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('d-none');
+    };
+    window.limparErro = (id) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.add('d-none'); }
+    };
+
+    window.mostrarToast = (msg, sucesso = true) => {
+      const toast = document.getElementById('toastFeedback');
+      toast.className = `toast align-items-center text-white border-0 ${sucesso ? 'bg-success' : 'bg-danger'}`;
+      document.getElementById('toastMensagem').textContent = msg;
+      bootstrap.Toast.getOrCreateInstance(toast, { delay: 3500 }).show();
+    };
+
+    window.formatarData = (data) => {
+      if (!data) return '-';
+      return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+    };
+
+    window.hoje = () => new Date().toISOString().split('T')[0];
+
+    window.popularSelectOpts = (selectId, lista, fnValor, fnLabel, labelVazio = '') => {
+      const el = document.getElementById(selectId);
+      if (!el) return;
+      const valorAtual = el.value;
+      el.innerHTML = labelVazio !== '' ? `<option value="">${labelVazio}</option>` : '';
+      lista.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value       = fnValor(item);
+        opt.textContent = fnLabel(item);
+        el.appendChild(opt);
+      });
+      if (valorAtual) el.value = valorAtual;
+    };
+
+    // Helpers de nome usados nos renders
+    window.getNomeUsuario = (id) => _usuSvc.listar().find(u => Number(u.ID_Usuario) === Number(id))?.NomeCompleto ?? '-';
+    window.getNomePlano   = (id) => _plaSvc.listar().find(p => Number(p.ID_Plano)   === Number(id))?.Nome         ?? '-';
+
+    window.renderDashboard = () => {};
+
+    // ── Expor controles no window ────────────────────────────────────
+    window.ctrlNovoPlano    = ctrlNovoPlano;
+    window.ctrlEditarPlano  = ctrlEditarPlano;
+    window.ctrlSalvarPlano  = ctrlSalvarPlano;
+    window.ctrlRenderPlanos = ctrlRenderPlanos;
+    window.ctrlExcluirPlano = ctrlExcluirPlano;
+
+    window.ctrlRenderAssinaturas  = ctrlRenderAssinaturas;
+    window.ctrlExcluirAssinatura  = ctrlExcluirAssinatura;
+
+    window.ctrlAtualizarResumoCheckout = ctrlAtualizarResumoCheckout;
+    window.ctrlSalvarCheckout          = ctrlSalvarCheckout;
+    window.ctrlRenderPagamentos        = ctrlRenderPagamentos;
+
+    // ── Evento: popular modal checkout ao abrir ──────────────────────
+    document.getElementById('modalCheckout').addEventListener('show.bs.modal', popularModalCheckout);
+
+    // ── Trocar de aba ────────────────────────────────────────────────
+    document.querySelectorAll('#tabNegocio button[data-bs-toggle="tab"]').forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (e) => {
+        const target = e.target.dataset.bsTarget;
+        if (target === '#tabPlanos')      ctrlRenderPlanos();
+        if (target === '#tabAssinaturas') ctrlRenderAssinaturas();
+        if (target === '#tabPagamentos')  ctrlRenderPagamentos();
+      });
+    });
+
+    // ── Render inicial ───────────────────────────────────────────────
+    ctrlRenderPlanos();
+  </script>
+</body>
+</html>

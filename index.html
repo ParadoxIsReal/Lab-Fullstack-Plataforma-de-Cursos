@@ -30,13 +30,13 @@
       <div class="row align-items-center">
         <div class="col-md-8">
           <h1 class="display-4">Plataforma de Cursos PUC</h1>
-          <p class="lead">Gerencie sua plataforma de cursos de forma eficiente</p>
+          <p class="lead">Gerencimento de plataforma de cursos</p>
         </div>
         <div class="col-md-4 text-end">
           <nav>
-            <a href="#" onclick="navegar('academico')" class="btn btn-outline-light me-2">Acadêmico</a>
+            <a href="#" onclick="navegar('core')" class="btn btn-outline-light me-2">Acadêmico</a>
             <a href="#" onclick="navegar('conteudo')" class="btn btn-outline-light me-2">Conteúdo</a>
-            <a href="#" onclick="navegar('acompanhamento')" class="btn btn-outline-light me-2">Acompanhamento</a>
+            <a href="#" onclick="navegar('interacao')" class="btn btn-outline-light me-2">Acompanhamento</a>
             <a href="#" onclick="navegar('curadoria')" class="btn btn-outline-light me-2">Curadoria</a>
             <a href="#" onclick="navegar('negocio')" class="btn btn-outline-light">Negócio</a>
           </nav>
@@ -50,7 +50,7 @@
     <div class="row g-4">
       <!-- Acadêmico -->
       <div class="col-md-6 col-lg-4">
-        <div class="card dashboard-card h-100" onclick="navegar('academico')">
+        <div class="card dashboard-card h-100" onclick="navegar('core')">
           <div class="card-header bg-primary text-white">
             <h5 class="card-title mb-0">Acadêmico</h5>
           </div>
@@ -83,7 +83,7 @@
 
       <!-- Acompanhamento -->
       <div class="col-md-6 col-lg-4">
-        <div class="card dashboard-card h-100" onclick="navegar('acompanhamento')">
+        <div class="card dashboard-card h-100" onclick="navegar('interacao')">
           <div class="card-header bg-warning text-white">
             <h5 class="card-title mb-0">Acompanhamento</h5>
           </div>
@@ -134,20 +134,55 @@
   </main>
 
 <script type="module" src="main.mjs"></script>
-<script>
+<script type="module">
+  import { UsuarioServico } from './servico/UsuarioServico.mjs';
+  import { CategoriaServico } from './servico/CategoriaServico.mjs';
+  import { CursoServico } from './servico/CursoServico.mjs';
+  import { ModuloServico } from './servico/ModuloServico.mjs';
+  import { AulaServico } from './servico/AulaServico.mjs';
+  import { MatriculaServico } from './servico/MatriculaServico.mjs';
+  import { ProgressoServico } from './servico/ProgressoServico.mjs';
+  import { AvaliacaoServico } from './servico/AvaliacaoServico.mjs';
+  import { TrilhaServico } from './servico/TrilhaServico.mjs';
+  import { CertificadoServico } from './servico/CertificadoServico.mjs';
+  import { PlanoServico } from './servico/PlanoServico.mjs';
+  import { AssinaturaServico } from './servico/AssinaturaServico.mjs';
+  import { PagamentoServico } from './servico/PagamentoServico.mjs';
+
+  const usuarioServico = new UsuarioServico();
+  const categoriaServico = new CategoriaServico();
+  const cursoServico = new CursoServico();
+  const moduloServico = new ModuloServico();
+  const aulaServico = new AulaServico();
+  const matriculaServico = new MatriculaServico();
+  const progressoServico = new ProgressoServico();
+  const avaliacaoServico = new AvaliacaoServico();
+  const trilhaServico = new TrilhaServico();
+  const certificadoServico = new CertificadoServico();
+  const planoServico = new PlanoServico();
+  const assinaturaServico = new AssinaturaServico();
+  const pagamentoServico = new PagamentoServico();
+
   function navegar(pagina) {
-    // Implementar navegação para as páginas
-    console.log('Navegando para:', pagina);
-    // Exemplo: window.location.href = pagina + '.html';
+    window.location.href = `paginas/${pagina}.html`;
   }
 
-  // Função para atualizar contadores (chamar após carregar dados)
   function atualizarDashboard() {
-    // Exemplo: buscar dados dos serviços e atualizar spans
-    // document.getElementById('count-usuarios').textContent = usuarios.length;
+    document.getElementById('count-usuarios').textContent = usuarioServico.listar().length;
+    document.getElementById('count-categorias').textContent = categoriaServico.listar().length;
+    document.getElementById('count-cursos').textContent = cursoServico.listar().length;
+    document.getElementById('count-modulos').textContent = moduloServico.listarModulos().length;
+    document.getElementById('count-aulas').textContent = aulaServico.listar().length;
+    document.getElementById('count-matriculas').textContent = matriculaServico.listar().length;
+    document.getElementById('count-progresso').textContent = progressoServico.listar().length;
+    document.getElementById('count-avaliacoes').textContent = avaliacaoServico.listar().length;
+    document.getElementById('count-trilhas').textContent = trilhaServico.listar().length;
+    document.getElementById('count-certificados').textContent = certificadoServico.listar().length;
+    document.getElementById('count-planos').textContent = planoServico.listar().length;
+    document.getElementById('count-assinaturas').textContent = assinaturaServico.listar().length;
+    document.getElementById('count-pagamentos').textContent = pagamentoServico.listar().length;
   }
 
-  // Chamar ao carregar
   window.addEventListener('load', atualizarDashboard);
 </script>
 

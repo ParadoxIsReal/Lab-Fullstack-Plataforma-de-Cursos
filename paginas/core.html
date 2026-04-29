@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acadêmico — Plataforma de Cursos PUC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <style>
+    body { background-color: #f8f9fa; }
+    .bg-primary { background-color: #0d6efd; color: white; }
+    .nav-tabs .nav-link.active { font-weight: 600; border-bottom: 3px solid #0d6efd; color: #0d6efd; }
+    .nav-tabs .nav-link { color: #495057; }
+    .card-curso .card-header { background-color: #0d6efd; color: white; }
+    .badge-nivel-Iniciante     { background-color: #198754; }
+    .badge-nivel-Intermediário { background-color: #fd7e14; }
+    .badge-nivel-Avançado      { background-color: #dc3545; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="bg-primary py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0 fw-bold">Plataforma de Cursos PUC</h4>
+        <small class="opacity-75">Módulo Acadêmico</small>
+      </div>
+      <a href="../index.html" class="btn btn-outline-light btn-sm">← Voltar ao Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Tabs de navegação -->
+  <div class="container mt-4">
+    <ul class="nav nav-tabs mb-4" id="tabAcademico">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabUsuarios">Usuários</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabCategorias">Categorias</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabCursos">Cursos</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ===================== ABA USUÁRIOS ===================== -->
+      <div class="tab-pane fade show active" id="tabUsuarios">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Usuários Cadastrados</h5>
+          <button class="btn btn-primary btn-sm" onclick="ctrlNovoUsuario()">+ Novo Usuário</button>
+        </div>
+
+        <!-- Busca -->
+        <div class="mb-3">
+          <input type="text" id="searchUsuarios" class="form-control" placeholder="Buscar por nome ou e-mail..."
+            oninput="ctrlRenderUsuarios(this.value)" />
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Cadastro</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyUsuarios">
+              <tr><td colspan="6" class="text-center text-muted">Nenhum registro encontrado.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ABA CATEGORIAS ===================== -->
+      <div class="tab-pane fade" id="tabCategorias">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Categorias</h5>
+          <button class="btn btn-primary btn-sm" onclick="ctrlNovaCategoria()">+ Nova Categoria</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Cursos</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyCategorias">
+              <tr><td colspan="5" class="text-center text-muted">Nenhum registro encontrado.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ABA CURSOS ===================== -->
+      <div class="tab-pane fade" id="tabCursos">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Cursos</h5>
+          <button class="btn btn-primary btn-sm" onclick="ctrlNovoCurso()">+ Novo Curso</button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="row g-2 mb-3">
+          <div class="col-md-5">
+            <select id="filtroCursoCategoria" class="form-select form-select-sm" onchange="ctrlRenderCursos()">
+              <option value="">Todas as categorias</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select id="filtroCursoNivel" class="form-select form-select-sm" onchange="ctrlRenderCursos()">
+              <option value="">Todos os níveis</option>
+              <option>Iniciante</option>
+              <option>Intermediário</option>
+              <option>Avançado</option>
+            </select>
+          </div>
+          <div class="col-md-3 d-flex align-items-center">
+            <button class="btn btn-outline-secondary btn-sm w-100" onclick="limparFiltrosCurso()">Limpar filtros</button>
+          </div>
+        </div>
+
+        <!-- Cards de cursos -->
+        <div class="row g-3" id="gridCursos">
+          <div class="col-12"><p class="text-muted">Nenhum curso cadastrado.</p></div>
+        </div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /container -->
+
+
+  <!-- ========== MODAL USUÁRIO ========== -->
+  <div class="modal fade" id="modalUsuario" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Novo Usuário</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroUsuario" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nome Completo <span class="text-danger">*</span></label>
+            <input type="text" id="uNome" class="form-control" placeholder="Nome completo" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">E-mail <span class="text-danger">*</span></label>
+            <input type="email" id="uEmail" class="form-control" placeholder="email@exemplo.com" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Senha <span class="text-danger">*</span></label>
+            <input type="password" id="uSenha" class="form-control" placeholder="Mínimo 8 caracteres" />
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="uInstrutor" />
+            <label class="form-check-label" for="uInstrutor">Este usuário é um <strong>Instrutor</strong></label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" onclick="ctrlSalvarUsuario()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL CATEGORIA ========== -->
+  <div class="modal fade" id="modalCategoria" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Nova Categoria</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroCategoria" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nome <span class="text-danger">*</span></label>
+            <input type="text" id="catNome" class="form-control" placeholder="Nome da categoria" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Descrição</label>
+            <textarea id="catDesc" class="form-control" rows="3" placeholder="Descrição opcional"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" onclick="ctrlSalvarCategoria()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL CURSO ========== -->
+  <div class="modal fade" id="modalCurso" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Novo Curso</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroCurso" class="alert alert-danger d-none"></div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
+              <input type="text" id="curTitulo" class="form-control" placeholder="Título do curso" />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Descrição</label>
+              <textarea id="curDesc" class="form-control" rows="2" placeholder="Descrição do curso"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Instrutor <span class="text-danger">*</span></label>
+              <select id="curInstrutor" class="form-select">
+                <option value="">Selecione instrutor...</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Categoria <span class="text-danger">*</span></label>
+              <select id="curCategoria" class="form-select">
+                <option value="">Selecione categoria...</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Nível <span class="text-danger">*</span></label>
+              <select id="curNivel" class="form-select">
+                <option value="">Selecione...</option>
+                <option>Iniciante</option>
+                <option>Intermediário</option>
+                <option>Avançado</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Total de Aulas</label>
+              <input type="number" id="curTotalAulas" class="form-control" value="0" min="0" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Total de Horas</label>
+              <input type="number" id="curTotalHoras" class="form-control" value="0" min="0" step="0.5" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Data de Publicação</label>
+              <input type="date" id="curDataPublicacao" class="form-control" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" onclick="ctrlSalvarCurso()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="toastFeedback" class="toast align-items-center text-white border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMensagem"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { ctrlNovoUsuario, ctrlEditarUsuario, ctrlSalvarUsuario, ctrlRenderUsuarios, ctrlExcluirUsuario } from '../controle/UsuarioControle.mjs';
+    import { ctrlNovaCategoria, ctrlEditarCategoria, ctrlSalvarCategoria, ctrlRenderCategorias, ctrlExcluirCategoria } from '../controle/CategoriaControle.mjs';
+    import { ctrlNovoCurso, ctrlEditarCurso, ctrlSalvarCurso, ctrlRenderCursos, ctrlExcluirCurso, popularModalCurso, popularFiltroCategorias } from '../controle/CursoControle.mjs';
+
+    // ── Helpers globais ──────────────────────────────────────────────
+    window.abrirModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
+    window.fecharModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide();
+
+    window.mostrarErro = (id, msg) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('d-none');
+    };
+    window.limparErro = (id) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.add('d-none'); }
+    };
+
+    window.mostrarToast = (msg, sucesso = true) => {
+      const toast = document.getElementById('toastFeedback');
+      toast.className = `toast align-items-center text-white border-0 ${sucesso ? 'bg-success' : 'bg-danger'}`;
+      document.getElementById('toastMensagem').textContent = msg;
+      bootstrap.Toast.getOrCreateInstance(toast, { delay: 3000 }).show();
+    };
+
+    window.formatarData = (data) => {
+      if (!data) return '-';
+      const d = new Date(data + 'T00:00:00');
+      return d.toLocaleDateString('pt-BR');
+    };
+
+    window.popularSelectOpts = (selectId, lista, fnValor, fnLabel, labelVazio = '') => {
+      const el = document.getElementById(selectId);
+      if (!el) return;
+      const valorAtual = el.value;
+      el.innerHTML = labelVazio !== ''
+        ? `<option value="">${labelVazio}</option>`
+        : '';
+      lista.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = fnValor(item);
+        opt.textContent = fnLabel(item);
+        el.appendChild(opt);
+      });
+      if (valorAtual) el.value = valorAtual;
+    };
+
+    // Helpers de nome (usados nos cards de curso)
+    import { CategoriaServico } from '../servico/CategoriaServico.mjs';
+    import { UsuarioServico }   from '../servico/UsuarioServico.mjs';
+    const _catSvc  = new CategoriaServico();
+    const _usuSvc  = new UsuarioServico();
+
+    window.getNomeCategoria = (id) => _catSvc.listar().find(c => Number(c.ID_Categoria) === Number(id))?.Nome ?? '-';
+    window.getNomeUsuario   = (id) => _usuSvc.listar().find(u => Number(u.ID_Usuario)   === Number(id))?.NomeCompleto ?? '-';
+
+    // Renderização do dashboard (stub — não usado nesta página)
+    window.renderDashboard = () => {};
+
+    // ── Expor funções de controle no window (usadas nos onclick inline) ──
+    window.ctrlNovoUsuario    = ctrlNovoUsuario;
+    window.ctrlEditarUsuario  = ctrlEditarUsuario;
+    window.ctrlSalvarUsuario  = ctrlSalvarUsuario;
+    window.ctrlRenderUsuarios = ctrlRenderUsuarios;
+    window.ctrlExcluirUsuario = ctrlExcluirUsuario;
+
+    window.ctrlNovaCategoria    = ctrlNovaCategoria;
+    window.ctrlEditarCategoria  = ctrlEditarCategoria;
+    window.ctrlSalvarCategoria  = ctrlSalvarCategoria;
+    window.ctrlRenderCategorias = ctrlRenderCategorias;
+    window.ctrlExcluirCategoria = ctrlExcluirCategoria;
+
+    window.ctrlNovoCurso    = ctrlNovoCurso;
+    window.ctrlEditarCurso  = ctrlEditarCurso;
+    window.ctrlSalvarCurso  = ctrlSalvarCurso;
+    window.ctrlRenderCursos = ctrlRenderCursos;
+    window.ctrlExcluirCurso = ctrlExcluirCurso;
+
+    window.limparFiltrosCurso = () => {
+      document.getElementById('filtroCursoCategoria').value = '';
+      document.getElementById('filtroCursoNivel').value = '';
+      ctrlRenderCursos();
+    };
+
+    // ── Evento: popular modal do curso ao abrir ──────────────────────
+    document.getElementById('modalCurso').addEventListener('show.bs.modal', popularModalCurso);
+
+    // ── Render inicial ao trocar de aba ──────────────────────────────
+    document.querySelectorAll('#tabAcademico button[data-bs-toggle="tab"]').forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (e) => {
+        const target = e.target.dataset.bsTarget;
+        if (target === '#tabUsuarios')   ctrlRenderUsuarios('');
+        if (target === '#tabCategorias') ctrlRenderCategorias();
+        if (target === '#tabCursos')     { popularFiltroCategorias(); ctrlRenderCursos(); }
+      });
+    });
+
+    // ── Render inicial (aba ativa = Usuários) ────────────────────────
+    ctrlRenderUsuarios('');
+  </script>
+</body>
+</html>

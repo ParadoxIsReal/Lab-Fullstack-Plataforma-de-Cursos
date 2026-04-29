@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Curadoria — Plataforma de Cursos PUC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <style>
+    body { background-color: #f8f9fa; }
+
+    /* Header info escuro */
+    .bg-info { background-color: #0dcaf0; color: #fff; }
+
+    /* Tabs */
+    .nav-tabs .nav-link.active { font-weight: 600; border-bottom: 3px solid #0dcaf0; color: #055160; }
+    .nav-tabs .nav-link { color: #495057; }
+
+    /* Card trilha */
+    .card-trilha .card-header {
+      background-color: #0dcaf0;
+      color: #055160;
+      font-weight: 600;
+    }
+    .card-trilha .badge-categoria {
+      background-color: #055160;
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 0.25em 0.55em;
+      border-radius: 0.4rem;
+    }
+    .card-trilha .list-group-item {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+    }
+    .card-trilha .list-group-item::before {
+      content: '▸ ';
+      color: #0dcaf0;
+    }
+
+    /* Card certificado */
+    .card-certificado {
+      border-left: 4px solid #0dcaf0;
+    }
+    .card-certificado .codigo-badge {
+      font-family: monospace;
+      background: #e7f9fc;
+      color: #055160;
+      border: 1px solid #9eeaf9;
+      padding: 0.2em 0.6em;
+      border-radius: 0.3rem;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    /* Select múltiplo de cursos */
+    #trilhaCursos {
+      min-height: 140px;
+    }
+
+    /* Info emissão certificado */
+    #certInfo {
+      font-size: 0.85rem;
+      color: #6c757d;
+      min-height: 1.2rem;
+    }
+
+    /* Busca certificados */
+    .search-wrapper { position: relative; }
+    .search-wrapper input { padding-left: 2.2rem; }
+    .search-wrapper .search-icon {
+      position: absolute;
+      left: 0.7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      pointer-events: none;
+    }
+
+    .table thead th { white-space: nowrap; }
+    .empty-state { text-align: center; padding: 2.5rem 0; color: #6c757d; }
+    .empty-state .icone { font-size: 2.2rem; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="bg-info-dark py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0 fw-bold">Plataforma de Cursos PUC</h4>
+        <small class="opacity-75">Módulo de Curadoria</small>
+      </div>
+      <a href="../index.html" class="btn btn-outline-light btn-sm">← Voltar ao Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="container mt-4">
+    <ul class="nav nav-tabs mb-4" id="tabCuradoria">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabTrilhas">Trilhas</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabCertificados">Certificados</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ===================== ABA TRILHAS ===================== -->
+      <div class="tab-pane fade show active" id="tabTrilhas">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Trilhas de Conhecimento</h5>
+          <button class="btn btn-info btn-sm fw-semibold text-white" onclick="ctrlNovaTrilha()">+ Nova Trilha</button>
+        </div>
+
+        <!-- Grid de cards -->
+        <div class="row g-3" id="gridTrilhas">
+          <div class="col-12">
+            <div class="empty-state">
+              Nenhuma trilha cadastrada.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABA CERTIFICADOS ===================== -->
+      <div class="tab-pane fade" id="tabCertificados">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Certificados Emitidos</h5>
+          <button class="btn btn-info btn-sm fw-semibold text-white" onclick="window.abrirModal('modalCertificado')">+ Emitir Certificado</button>
+        </div>
+
+        <!-- Busca por código -->
+        <div class="search-wrapper mb-3" style="max-width:360px">
+          <input type="text" id="searchCertificados" class="form-control form-control-sm"
+            placeholder="Buscar por código de verificação..."
+            oninput="ctrlRenderCertificados()" />
+        </div>
+
+        <!-- Grid de cards -->
+        <div class="row g-3" id="gridCertificados">
+          <div class="col-12">
+            <div class="empty-state">
+              Nenhum certificado emitido.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /container -->
+
+
+  <!-- ========== MODAL TRILHA ========== -->
+  <div class="modal fade" id="modalTrilha" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-info-dark">
+          <h5 class="modal-title text-white">Nova Trilha</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroTrilha" class="alert alert-danger d-none"></div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
+              <input type="text" id="trilhaTitulo" class="form-control" placeholder="Título da trilha" />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Descrição</label>
+              <textarea id="trilhaDesc" class="form-control" rows="2" placeholder="Descrição opcional"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Categoria</label>
+              <select id="trilhaCategoria" class="form-select">
+                <option value="">- Nenhuma -</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Cursos da Trilha</label>
+              <select id="trilhaCursos" class="form-select" multiple>
+                <!-- populado dinamicamente -->
+              </select>
+              <div class="form-text">
+                Segure <kbd>Ctrl</kbd> (ou <kbd>Cmd</kbd> no Mac) para selecionar múltiplos cursos.
+                A ordem de exibição seguirá a sequência de seleção.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-info text-white fw-semibold" onclick="ctrlSalvarTrilha()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL CERTIFICADO ========== -->
+  <div class="modal fade" id="modalCertificado" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-info-dark">
+          <h5 class="modal-title text-white">Emitir Certificado</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroCertificado" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Aluno <span class="text-danger">*</span></label>
+            <select id="certUsuario" class="form-select">
+              <option value="">Selecione aluno...</option>
+            </select>
+            <div class="form-text">Apenas alunos com cursos concluídos são listados.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Curso Concluído <span class="text-danger">*</span></label>
+            <select id="certCurso" class="form-select" disabled>
+              <option value="">Selecione curso...</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Trilha Relacionada</label>
+            <select id="certTrilha" class="form-select">
+              <option value="">- Nenhuma -</option>
+            </select>
+            <div class="form-text">Opcional — associe o certificado a uma trilha.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Data de Emissão <span class="text-danger">*</span></label>
+            <input type="date" id="certData" class="form-control" />
+          </div>
+
+          <!-- Feedback de estado dinâmico -->
+          <div class="alert alert-info py-2 px-3 mb-0">
+            <small id="certInfo">Selecione um usuário com pelo menos um curso concluído.</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnEmitirCertificado" class="btn btn-info text-white fw-semibold" onclick="ctrlSalvarCertificado()" disabled>
+            Emitir Certificado
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="toastFeedback" class="toast align-items-center text-white border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMensagem"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { ctrlNovaTrilha, ctrlEditarTrilha, ctrlSalvarTrilha, ctrlRenderTrilhas, ctrlExcluirTrilha, popularModalTrilha } from '../controle/TrilhaControle.mjs';
+    import { popularModalCertificado, ctrlSalvarCertificado, ctrlRenderCertificados, ctrlExcluirCertificado, atualizarCursosCertificado } from '../controle/CertificadoControle.mjs';
+    import { CategoriaServico } from '../servico/CategoriaServico.mjs';
+    import { CursoServico }     from '../servico/CursoServico.mjs';
+    import { UsuarioServico }   from '../servico/UsuarioServico.mjs';
+
+    const _catSvc  = new CategoriaServico();
+    const _curSvc  = new CursoServico();
+    const _usuSvc  = new UsuarioServico();
+
+    // ── Helpers globais ──────────────────────────────────────────────
+    window.abrirModal  = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
+    window.fecharModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide();
+
+    window.mostrarErro = (id, msg) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('d-none');
+    };
+    window.limparErro = (id) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.add('d-none'); }
+    };
+
+    window.mostrarToast = (msg, sucesso = true) => {
+      const toast = document.getElementById('toastFeedback');
+      toast.className = `toast align-items-center text-white border-0 ${sucesso ? 'bg-success' : 'bg-danger'}`;
+      document.getElementById('toastMensagem').textContent = msg;
+      bootstrap.Toast.getOrCreateInstance(toast, { delay: 3000 }).show();
+    };
+
+    window.formatarData = (data) => {
+      if (!data) return '-';
+      return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+    };
+
+    window.hoje = () => new Date().toISOString().split('T')[0];
+
+    window.popularSelectOpts = (selectId, lista, fnValor, fnLabel, labelVazio = '') => {
+      const el = document.getElementById(selectId);
+      if (!el) return;
+      const valorAtual = el.value;
+      el.innerHTML = labelVazio !== '' ? `<option value="">${labelVazio}</option>` : '';
+      lista.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value       = fnValor(item);
+        opt.textContent = fnLabel(item);
+        el.appendChild(opt);
+      });
+      if (valorAtual) el.value = valorAtual;
+    };
+
+    // Helpers de nome usados nos renders de trilha e certificado
+    window.getNomeCategoria = (id) => _catSvc.listar().find(c => Number(c.ID_Categoria) === Number(id))?.Nome   ?? '-';
+    window.getNomeCurso     = (id) => _curSvc.listar().find(c => Number(c.ID_Curso)     === Number(id))?.Titulo ?? '-';
+    window.getNomeUsuario   = (id) => _usuSvc.listar().find(u => Number(u.ID_Usuario)   === Number(id))?.NomeCompleto ?? '-';
+
+    window.renderDashboard = () => {};
+
+    // ── Expor controles no window ────────────────────────────────────
+    window.ctrlNovaTrilha    = ctrlNovaTrilha;
+    window.ctrlEditarTrilha  = ctrlEditarTrilha;
+    window.ctrlSalvarTrilha  = ctrlSalvarTrilha;
+    window.ctrlRenderTrilhas = ctrlRenderTrilhas;
+    window.ctrlExcluirTrilha = ctrlExcluirTrilha;
+
+    window.ctrlSalvarCertificado  = ctrlSalvarCertificado;
+    window.ctrlRenderCertificados = ctrlRenderCertificados;
+    window.ctrlExcluirCertificado = ctrlExcluirCertificado;
+
+    // ── Eventos: popular modais ao abrir ─────────────────────────────
+    document.getElementById('modalTrilha').addEventListener('show.bs.modal', popularModalTrilha);
+    document.getElementById('modalCertificado').addEventListener('show.bs.modal', popularModalCertificado);
+
+    // ── Trocar de aba ────────────────────────────────────────────────
+    document.querySelectorAll('#tabCuradoria button[data-bs-toggle="tab"]').forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (e) => {
+        const target = e.target.dataset.bsTarget;
+        if (target === '#tabTrilhas')      ctrlRenderTrilhas();
+        if (target === '#tabCertificados') ctrlRenderCertificados();
+      });
+    });
+
+    // ── Render inicial ───────────────────────────────────────────────
+    ctrlRenderTrilhas();
+  </script>
+</body>
+</html>

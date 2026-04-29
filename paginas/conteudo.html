@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conteúdo — Plataforma de Cursos PUC</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <style>
+    body { background-color: #f8f9fa; }
+    .bg-success-dark { background-color: #146c43; color: white; }
+    .nav-tabs .nav-link.active { font-weight: 600; border-bottom: 3px solid #198754; color: #198754; }
+    .nav-tabs .nav-link { color: #495057; }
+
+    .badge-tipo-Vídeo  { background-color: #0d6efd; }
+    .badge-tipo-Texto  { background-color: #198754; }
+    .badge-tipo-Quiz   { background-color: #ffc107; color: #212529; }
+
+    .filtro-card {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .table thead th { white-space: nowrap; }
+    .instrucao-filtro {
+      text-align: center;
+      padding: 2rem 0;
+      color: #6c757d;
+    }
+    .instrucao-filtro .icone { font-size: 2rem; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header style="background-color:#146c43;" class="text-white py-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0 fw-bold">Plataforma de Cursos PUC</h4>
+        <small class="opacity-75">Módulo de Conteúdo</small>
+      </div>
+      <a href="../index.html" class="btn btn-outline-light btn-sm">← Voltar ao Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="container mt-4">
+    <ul class="nav nav-tabs mb-4" id="tabConteudo">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabModulos">Módulos</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabAulas">Aulas</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ===================== ABA MÓDULOS ===================== -->
+      <div class="tab-pane fade show active" id="tabModulos">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Módulos</h5>
+          <button class="btn btn-success btn-sm" onclick="ctrlNovoModulo()">+ Novo Módulo</button>
+        </div>
+
+        <!-- Filtro por curso -->
+        <div class="filtro-card">
+          <label class="form-label fw-semibold mb-1">Filtrar por Curso</label>
+          <select id="filtroCursoModulos" class="form-select" onchange="ctrlRenderModulos()">
+            <option value="">Selecione um curso...</option>
+          </select>
+        </div>
+
+        <!-- Tabela módulos -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th style="width:80px">Ordem</th>
+                <th>Título</th>
+                <th style="width:100px">Aulas</th>
+                <th style="width:140px">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyModulos">
+              <tr>
+                <td colspan="4">
+                  <div class="instrucao-filtro">
+                    Selecione um curso acima para visualizar seus módulos.
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================== ABA AULAS ===================== -->
+      <div class="tab-pane fade" id="tabAulas">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Aulas</h5>
+          <button class="btn btn-success btn-sm" onclick="ctrlNovaAula()">+ Nova Aula</button>
+        </div>
+
+        <!-- Filtro por módulo -->
+        <div class="filtro-card">
+          <label class="form-label fw-semibold mb-1">Filtrar por Módulo</label>
+          <select id="filtroModuloAulas" class="form-select" onchange="ctrlRenderAulas()">
+            <option value="">Selecione um módulo...</option>
+          </select>
+        </div>
+
+        <!-- Tabela aulas -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th style="width:80px">Ordem</th>
+                <th>Título</th>
+                <th style="width:110px">Tipo</th>
+                <th style="width:110px">Duração</th>
+                <th style="width:140px">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyAulas">
+              <tr>
+                <td colspan="5">
+                  <div class="instrucao-filtro">
+                    Selecione um módulo acima para visualizar suas aulas.
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /container -->
+
+
+  <!-- ========== MODAL MÓDULO ========== -->
+  <div class="modal fade" id="modalModulo" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color:#146c43;">
+          <h5 class="modal-title">Novo Módulo</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroModulo" class="alert alert-danger d-none"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Curso <span class="text-danger">*</span></label>
+            <select id="modCurso" class="form-select">
+              <option value="">Selecione um curso...</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
+            <input type="text" id="modTitulo" class="form-control" placeholder="Título do módulo" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Ordem <span class="text-danger">*</span></label>
+            <input type="number" id="modOrdem" class="form-control" value="1" min="1" />
+            <div class="form-text">Posição do módulo dentro do curso.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-success" onclick="ctrlSalvarModulo()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL AULA ========== -->
+  <div class="modal fade" id="modalAula" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color:#146c43;">
+          <h5 class="modal-title">Nova Aula</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="erroAula" class="alert alert-danger d-none"></div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold">Módulo <span class="text-danger">*</span></label>
+              <select id="aulaModulo" class="form-select">
+                <option value="">Selecione um módulo...</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
+              <input type="text" id="aulaTitulo" class="form-control" placeholder="Título da aula" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Tipo de Conteúdo <span class="text-danger">*</span></label>
+              <select id="aulaTipo" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="Vídeo">Vídeo</option>
+                <option value="Texto">Texto</option>
+                <option value="Quiz">Quiz</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Duração (min) <span class="text-danger">*</span></label>
+              <input type="number" id="aulaDuracao" class="form-control" value="10" min="1" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Ordem <span class="text-danger">*</span></label>
+              <input type="number" id="aulaOrdem" class="form-control" value="1" min="1" />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">URL do Conteúdo</label>
+              <input type="url" id="aulaURL" class="form-control" placeholder="https://..." />
+              <div class="form-text">Link do vídeo, documento ou recurso externo.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-success" onclick="ctrlSalvarAula()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="toastFeedback" class="toast align-items-center text-white border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMensagem"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import { ctrlNovoModulo, ctrlEditarModulo, ctrlSalvarModulo, ctrlRenderModulos, ctrlExcluirModulo, popularModalModulo } from '../controle/ModuloControle.mjs';
+    import { ctrlNovaAula, ctrlEditarAula, ctrlSalvarAula, ctrlRenderAulas, ctrlExcluirAula, popularModalAula } from '../controle/AulaControle.mjs';
+    import { CursoServico } from '../servico/CursoServico.mjs';
+    import { ModuloServico } from '../servico/ModuloServico.mjs';
+
+    const cursoServico  = new CursoServico();
+    const moduloServico = new ModuloServico();
+
+    // ── Helpers globais ──────────────────────────────────────────────
+    window.abrirModal  = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
+    window.fecharModal = (id) => bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).hide();
+
+    window.mostrarErro = (id, msg) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('d-none');
+    };
+    window.limparErro = (id) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.add('d-none'); }
+    };
+
+    window.mostrarToast = (msg, sucesso = true) => {
+      const toast = document.getElementById('toastFeedback');
+      toast.className = `toast align-items-center text-white border-0 ${sucesso ? 'bg-success' : 'bg-danger'}`;
+      document.getElementById('toastMensagem').textContent = msg;
+      bootstrap.Toast.getOrCreateInstance(toast, { delay: 3000 }).show();
+    };
+
+    window.popularSelectOpts = (selectId, lista, fnValor, fnLabel, labelVazio = '') => {
+      const el = document.getElementById(selectId);
+      if (!el) return;
+      const valorAtual = el.value;
+      el.innerHTML = labelVazio !== '' ? `<option value="">${labelVazio}</option>` : '';
+      lista.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value    = fnValor(item);
+        opt.textContent = fnLabel(item);
+        el.appendChild(opt);
+      });
+      if (valorAtual) el.value = valorAtual;
+    };
+
+    window.renderDashboard = () => {};
+
+    // ── Expor controles no window ────────────────────────────────────
+    window.ctrlNovoModulo    = ctrlNovoModulo;
+    window.ctrlEditarModulo  = ctrlEditarModulo;
+    window.ctrlSalvarModulo  = ctrlSalvarModulo;
+    window.ctrlRenderModulos = ctrlRenderModulos;
+    window.ctrlExcluirModulo = ctrlExcluirModulo;
+
+    window.ctrlNovaAula    = ctrlNovaAula;
+    window.ctrlEditarAula  = ctrlEditarAula;
+    window.ctrlSalvarAula  = ctrlSalvarAula;
+    window.ctrlRenderAulas = ctrlRenderAulas;
+    window.ctrlExcluirAula = ctrlExcluirAula;
+
+    // ── Popular filtro de cursos (aba Módulos) ───────────────────────
+    function popularFiltroCursoModulos() {
+      window.popularSelectOpts(
+        'filtroCursoModulos',
+        cursoServico.listar(),
+        c => c.ID_Curso,
+        c => c.Titulo,
+        'Selecione um curso...'
+      );
+    }
+
+    // ── Popular filtro de módulos (aba Aulas) ────────────────────────
+    window.popularSelectAulasFiltro = function() {
+      window.popularSelectOpts(
+        'filtroModuloAulas',
+        moduloServico.listarModulos(),
+        m => m.ID_Modulo,
+        m => `[Curso #${m.ID_Curso}] ${m.Titulo} (Ord.${m.Ordem})`,
+        'Selecione um módulo...'
+      );
+    };
+
+    // ── Eventos: popular modais ao abrir ─────────────────────────────
+    document.getElementById('modalModulo').addEventListener('show.bs.modal', popularModalModulo);
+    document.getElementById('modalAula').addEventListener('show.bs.modal', popularModalAula);
+
+    // ── Eventos: trocar de aba ───────────────────────────────────────
+    document.querySelectorAll('#tabConteudo button[data-bs-toggle="tab"]').forEach(btn => {
+      btn.addEventListener('shown.bs.tab', (e) => {
+        const target = e.target.dataset.bsTarget;
+        if (target === '#tabModulos') {
+          popularFiltroCursoModulos();
+          ctrlRenderModulos();
+        }
+        if (target === '#tabAulas') {
+          window.popularSelectAulasFiltro();
+          ctrlRenderAulas();
+        }
+      });
+    });
+
+    // ── Render inicial ───────────────────────────────────────────────
+    popularFiltroCursoModulos();
+    ctrlRenderModulos();
+  </script>
+</body>
+</html>
