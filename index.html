@@ -167,6 +167,8 @@
     window.location.href = `paginas/${pagina}.html`;
   }
 
+  window.navegar = navegar;
+
   function atualizarDashboard() {
     document.getElementById('count-usuarios').textContent = usuarioServico.listar().length;
     document.getElementById('count-categorias').textContent = categoriaServico.listar().length;
