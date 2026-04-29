@@ -25,7 +25,7 @@ export class MatriculaServico {
     return this.listar().find(matricula => Number(matricula.ID_Matricula) === Number(id)) ?? null;
   }
 
-  salvar(dados, cursoService) {
+  salvar(dados, cursoServico) {
     const payload = {
       ID_Usuario: Number(dados.ID_Usuario),
       ID_Curso: Number(dados.ID_Curso),
@@ -44,7 +44,7 @@ export class MatriculaServico {
       throw new Error('Este usuario ja esta matriculado neste curso.');
     }
 
-    const curso = cursoService.buscarPorId(payload.ID_Curso);
+    const curso = cursoServico.buscarPorId(payload.ID_Curso);
     if (curso?.ID_Instrutor === payload.ID_Usuario) {
       throw new Error('O instrutor nao pode se matricular em seu proprio curso.');
     }

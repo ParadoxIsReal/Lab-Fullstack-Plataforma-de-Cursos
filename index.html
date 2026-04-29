@@ -13,13 +13,143 @@
       background-color: #6f42c1; /* roxo do próprio Bootstrap */
       color: white;
     }
+    .dashboard-card {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .dashboard-card:hover {
+      transform: scale(1.05);
+    }
     </style>
   </head>
 
 <body class="bg-light">
+  <!-- Banner Principal -->
+  <header class="bg-purple text-white py-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="display-4">Plataforma de Cursos PUC</h1>
+          <p class="lead">Gerencie sua plataforma de cursos de forma eficiente</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <nav>
+            <a href="#" onclick="navegar('academico')" class="btn btn-outline-light me-2">Acadêmico</a>
+            <a href="#" onclick="navegar('conteudo')" class="btn btn-outline-light me-2">Conteúdo</a>
+            <a href="#" onclick="navegar('acompanhamento')" class="btn btn-outline-light me-2">Acompanhamento</a>
+            <a href="#" onclick="navegar('curadoria')" class="btn btn-outline-light me-2">Curadoria</a>
+            <a href="#" onclick="navegar('negocio')" class="btn btn-outline-light">Negócio</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
 
+  <!-- Dashboard -->
+  <main class="container my-5">
+    <div class="row g-4">
+      <!-- Acadêmico -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card dashboard-card h-100" onclick="navegar('academico')">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Acadêmico</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Gerencie usuários, categorias e cursos.</p>
+            <ul class="list-unstyled">
+              <li><strong>Usuários:</strong> <span id="count-usuarios">0</span></li>
+              <li><strong>Categorias:</strong> <span id="count-categorias">0</span></li>
+              <li><strong>Cursos:</strong> <span id="count-cursos">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conteúdo -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card dashboard-card h-100" onclick="navegar('conteudo')">
+          <div class="card-header bg-success text-white">
+            <h5 class="card-title mb-0">Conteúdo</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Organize módulos e aulas.</p>
+            <ul class="list-unstyled">
+              <li><strong>Módulos:</strong> <span id="count-modulos">0</span></li>
+              <li><strong>Aulas:</strong> <span id="count-aulas">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acompanhamento -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card dashboard-card h-100" onclick="navegar('acompanhamento')">
+          <div class="card-header bg-warning text-white">
+            <h5 class="card-title mb-0">Acompanhamento</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Monitore matrículas, progresso e avaliações.</p>
+            <ul class="list-unstyled">
+              <li><strong>Matrículas:</strong> <span id="count-matriculas">0</span></li>
+              <li><strong>Progresso:</strong> <span id="count-progresso">0</span></li>
+              <li><strong>Avaliações:</strong> <span id="count-avaliacoes">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Curadoria -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card dashboard-card h-100" onclick="navegar('curadoria')">
+          <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Curadoria</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Crie trilhas e emita certificados.</p>
+            <ul class="list-unstyled">
+              <li><strong>Trilhas:</strong> <span id="count-trilhas">0</span></li>
+              <li><strong>Certificados:</strong> <span id="count-certificados">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Negócio -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card dashboard-card h-100" onclick="navegar('negocio')">
+          <div class="card-header bg-danger text-white">
+            <h5 class="card-title mb-0">Negócio</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Administre planos, assinaturas e pagamentos.</p>
+            <ul class="list-unstyled">
+              <li><strong>Planos:</strong> <span id="count-planos">0</span></li>
+              <li><strong>Assinaturas:</strong> <span id="count-assinaturas">0</span></li>
+              <li><strong>Pagamentos:</strong> <span id="count-pagamentos">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 
 <script type="module" src="main.mjs"></script>
+<script>
+  function navegar(pagina) {
+    // Implementar navegação para as páginas
+    console.log('Navegando para:', pagina);
+    // Exemplo: window.location.href = pagina + '.html';
+  }
+
+  // Função para atualizar contadores (chamar após carregar dados)
+  function atualizarDashboard() {
+    // Exemplo: buscar dados dos serviços e atualizar spans
+    // document.getElementById('count-usuarios').textContent = usuarios.length;
+  }
+
+  // Chamar ao carregar
+  window.addEventListener('load', atualizarDashboard);
+</script>
 
 </body>
 </html>
