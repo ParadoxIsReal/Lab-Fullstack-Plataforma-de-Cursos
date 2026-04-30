@@ -19,6 +19,10 @@ export class UsuarioServico {
     return JSON.parse(localStorage.getItem(KEY) ?? '[]');
   }
 
+  listarInstrutores() {
+    return this.listar();
+  }
+
   buscarPorId(id) {
     return this.listar().find(usuario => Number(usuario.ID_Usuario) === Number(id)) ?? null;
   }

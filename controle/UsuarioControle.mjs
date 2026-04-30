@@ -41,7 +41,6 @@ export function ctrlEditarUsuario(id) {
   modal.dataset.editId = String(id);
   document.getElementById('uNome').value = usuario.NomeCompleto;
   document.getElementById('uEmail').value = usuario.Email;
-  document.getElementById('uInstrutor').checked = usuario.IsInstrutor;
   atualizarTextoModalUsuario(true);
   window.abrirModal('modalUsuario');
 }
@@ -54,8 +53,7 @@ export function ctrlSalvarUsuario() {
   const payload = {
     NomeCompleto: document.getElementById('uNome').value.trim(),
     Email: document.getElementById('uEmail').value.trim(),
-    Senha: document.getElementById('uSenha').value,
-    IsInstrutor: document.getElementById('uInstrutor').checked
+    Senha: document.getElementById('uSenha').value
   };
 
   try {
@@ -90,7 +88,7 @@ export function ctrlRenderUsuarios(filtro = '') {
       <td>${usuario.ID_Usuario}</td>
       <td>${usuario.NomeCompleto}</td>
       <td>${usuario.Email}</td>
-      <td>${usuario.IsInstrutor ? 'Instrutor' : 'Aluno'}</td>
+      <td>-</td>
       <td>${window.formatarData(usuario.DataCadastro)}</td>
       <td class="d-flex gap-1">
         <button class="btn btn-sm btn-outline-primary" onclick="ctrlEditarUsuario(${usuario.ID_Usuario})">Editar</button>
