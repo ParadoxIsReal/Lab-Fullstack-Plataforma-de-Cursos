@@ -104,7 +104,7 @@ export function ctrlRenderPagamentos() {
       <td>${pagamento.ID_Assinatura}</td>
       <td>R$ ${Number(pagamento.ValorPago).toFixed(2).replace('.', ',')}</td>
       <td>${pagamento.MetodoPagamento}</td>
-      <td><code class="small">${pagamento.Id_Transacao_Gateway}</code></td>
+      <td><code class="small">${pagamento.ID_Transacao_Gateway}</code></td>
       <td>${window.formatarData(pagamento.DataPagamento)}</td>
     </tr>`).join('');
 }

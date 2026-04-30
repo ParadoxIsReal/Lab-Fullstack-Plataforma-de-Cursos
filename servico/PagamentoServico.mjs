@@ -22,7 +22,7 @@ export class PagamentoServico {
       ValorPago: Number(dados.ValorPago),
       DataPagamento: dados.DataPagamento ?? hoje(),
       MetodoPagamento: dados.MetodoPagamento,
-      Id_Transacao_Gateway: dados.Id_Transacao_Gateway ?? gerarIdTransacao()
+      ID_Transacao_Gateway: dados.ID_Transacao_Gateway ?? gerarIdTransacao()
     });
 
     const lista = this.listar();
