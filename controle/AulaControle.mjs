@@ -4,10 +4,12 @@ import { ModuloServico } from '../servico/ModuloServico.mjs';
 const aulaServico = new AulaServico();
 const moduloServico = new ModuloServico();
 
+// Retorna o elemento do modal de aula na página
 function getModalAula() {
   return document.getElementById('modalAula');
 }
 
+// Ajusta o título e o texto do botão do modal dependendo se é edição ou criação
 function atualizarTextoModalAula(edicao = false) {
   const modal = getModalAula();
   if (!modal) return;
@@ -29,11 +31,13 @@ function limparFormularioAula() {
   atualizarTextoModalAula(false);
 }
 
+// Prepara o modal limpo para criar uma nova aula
 export function ctrlNovaAula() {
   limparFormularioAula();
   window.abrirModal('modalAula');
 }
 
+// Abre o modal para editar uma aula existente, guardando o id no modal
 export function ctrlEditarAula(id) {
   const modal = getModalAula();
   if (!modal) return;
@@ -42,6 +46,7 @@ export function ctrlEditarAula(id) {
   window.abrirModal('modalAula');
 }
 
+// Carrega os dados do modal e a lista de módulos ao abrir o modal de aula
 export function popularModalAula() {
   window.popularSelectOpts(
     'aulaModulo',
@@ -69,6 +74,7 @@ export function popularModalAula() {
   atualizarTextoModalAula(true);
 }
 
+// Salva a aula nova ou editada e atualiza a lista de aulas
 export function ctrlSalvarAula() {
   window.limparErro('erroAula');
 
@@ -95,6 +101,7 @@ export function ctrlSalvarAula() {
   }
 }
 
+// Preenche a tabela de aulas do módulo selecionado
 export function ctrlRenderAulas() {
   const tbody = document.getElementById('bodyAulas');
   const filtroModulo = document.getElementById('filtroModuloAulas');
@@ -126,6 +133,7 @@ export function ctrlRenderAulas() {
     </tr>`).join('');
 }
 
+// Apaga a aula escolhida depois de confirmar
 export function ctrlExcluirAula(id) {
   if (!confirm('Excluir esta aula?')) return;
   aulaServico.excluir(id);

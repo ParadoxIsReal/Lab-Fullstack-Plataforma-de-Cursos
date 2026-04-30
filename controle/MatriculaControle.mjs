@@ -6,6 +6,7 @@ const usuarioServico = new UsuarioServico();
 const cursoServico = new CursoServico();
 const matriculaServico = new MatriculaServico();
 
+// Atualiza os cursos disponíveis para o usuário selecionado
 export function atualizarCursosMatricula() {
   const selectUsuario = document.getElementById('matUsuario');
   if (!selectUsuario) return;
@@ -16,6 +17,7 @@ export function atualizarCursosMatricula() {
   window.popularSelectOpts('matCurso', cursosDisponiveis, curso => curso.ID_Curso, curso => curso.Titulo, 'Selecione curso...');
 }
 
+// Prepara o modal de matrícula com alunos e cursos iniciais
 export function popularModalMatricula() {
   window.popularSelectOpts('matUsuario', usuarioServico.listar(), usuario => usuario.ID_Usuario, usuario => usuario.NomeCompleto, 'Selecione aluno...');
   atualizarCursosMatricula();
@@ -23,6 +25,7 @@ export function popularModalMatricula() {
   document.getElementById('matUsuario').onchange = atualizarCursosMatricula;
 }
 
+// Salva a matrícula escolhida e atualiza a tela
 export function ctrlSalvarMatricula() {
   window.limparErro('erroMatricula');
 
@@ -35,19 +38,20 @@ export function ctrlSalvarMatricula() {
     window.fecharModal('modalMatricula');
     ctrlRenderMatriculas();
     window.renderDashboard();
-    window.mostrarToast('Matricula realizada!');
+    window.mostrarToast('Matrícula realizada!');
   } catch (error) {
     window.mostrarErro('erroMatricula', error.message);
   }
 }
 
+// Mostra todas as matrículas cadastradas na tabela
 export function ctrlRenderMatriculas() {
   const tbody = document.getElementById('bodyMatriculas');
   if (!tbody) return;
 
   const matriculas = matriculaServico.listar();
   if (matriculas.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma matricula registrada.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma matrícula registrada.</td></tr>';
     return;
   }
 
@@ -65,16 +69,18 @@ export function ctrlRenderMatriculas() {
     </tr>`).join('');
 }
 
+// Marca a matrícula como concluída e atualiza a lista
 export function ctrlConcluirMatricula(id) {
   matriculaServico.concluir(id);
   ctrlRenderMatriculas();
-  window.mostrarToast('Matricula concluida!');
+  window.mostrarToast('Matrícula concluída!');
 }
 
+// Remove a matrícula após confirmação do usuário
 export function ctrlExcluirMatricula(id) {
-  if (!confirm('Excluir esta matricula?')) return;
+  if (!confirm('Excluir esta matrícula?')) return;
   matriculaServico.excluir(id);
   ctrlRenderMatriculas();
   window.renderDashboard();
-  window.mostrarToast('Matricula removida.', false);
+  window.mostrarToast('Matrícula removida.', false);
 }

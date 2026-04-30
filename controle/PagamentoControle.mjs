@@ -8,6 +8,7 @@ const planoServico = new PlanoServico();
 const assinaturaServico = new AssinaturaServico();
 const pagamentoServico = new PagamentoServico();
 
+// Preenche o modal de checkout com usuários e planos disponíveis
 export function popularModalCheckout() {
   window.popularSelectOpts('ckUsuario', usuarioServico.listar(), usuario => usuario.ID_Usuario, usuario => usuario.NomeCompleto, 'Selecione usuario...');
   window.popularSelectOpts(
@@ -22,6 +23,7 @@ export function popularModalCheckout() {
   if (summary) summary.innerHTML = '<div class="card-body text-muted small">Selecione usuario, plano e data para ver o resumo.</div>';
 }
 
+// Atualiza o resumo de pagamento conforme as escolhas do usuário
 export function ctrlAtualizarResumoCheckout() {
   const idUsuario = Number(document.getElementById('ckUsuario')?.value);
   const idPlano = Number(document.getElementById('ckPlano')?.value);
@@ -53,6 +55,7 @@ export function ctrlAtualizarResumoCheckout() {
     </div>`;
 }
 
+// Salva a assinatura e o pagamento, depois atualiza a tela
 export function ctrlSalvarCheckout() {
   window.limparErro('erroCheckout');
 
@@ -89,6 +92,7 @@ export function ctrlSalvarCheckout() {
   window.mostrarToast('Pagamento confirmado! Assinatura ativada.');
 }
 
+// Preenche a tabela de pagamentos com os registros existentes
 export function ctrlRenderPagamentos() {
   const tbody = document.getElementById('bodyPagamentos');
   if (!tbody) return;

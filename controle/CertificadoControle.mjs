@@ -10,6 +10,7 @@ const cursoServico = new CursoServico();
 const trilhaServico = new TrilhaServico();
 const certificadoServico = new CertificadoServico();
 
+// Ajusta a interface do certificado conforme usuario e curso selecionados
 function atualizarEstadoEmissaoCertificado(mensagem = '') {
   const selectUsuario = document.getElementById('certUsuario');
   const selectCurso = document.getElementById('certCurso');
@@ -38,6 +39,7 @@ function atualizarEstadoEmissaoCertificado(mensagem = '') {
   info.textContent = texto;
 }
 
+// Atualiza a lista de cursos concluídos para o aluno selecionado
 export function atualizarCursosCertificado() {
   const selectUsuario = document.getElementById('certUsuario');
   if (!selectUsuario) return;
@@ -59,6 +61,7 @@ export function atualizarCursosCertificado() {
   );
 }
 
+// Carrega os dados e estados iniciais do modal de certificados
 export function popularModalCertificado() {
   const idsMatriculados = [...new Set(
     matriculaServico.listarConcluidas().map(matricula => matricula.ID_Usuario)
@@ -77,6 +80,7 @@ export function popularModalCertificado() {
   );
 }
 
+// Salva o certificado e mostra mensagem de sucesso
 export function ctrlSalvarCertificado() {
   window.limparErro('erroCertificado');
 
@@ -96,6 +100,7 @@ export function ctrlSalvarCertificado() {
   }
 }
 
+// Renderiza a lista de certificados em cards na página
 export function ctrlRenderCertificados() {
   const grid = document.getElementById('gridCertificados');
   const search = document.getElementById('searchCertificados');
@@ -127,6 +132,7 @@ export function ctrlRenderCertificados() {
   }).join('');
 }
 
+// Revoga o certificado selecionado e recarrega a lista
 export function ctrlExcluirCertificado(id) {
   if (!confirm('Revogar este certificado?')) return;
   certificadoServico.excluir(id);

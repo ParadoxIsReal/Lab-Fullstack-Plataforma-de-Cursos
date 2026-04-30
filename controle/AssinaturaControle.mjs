@@ -2,6 +2,7 @@ import { AssinaturaServico } from '../servico/AssinaturaServico.mjs';
 
 const assinaturaServico = new AssinaturaServico();
 
+// Enche a tabela de assinaturas com os dados salvos
 export function ctrlRenderAssinaturas() {
   const tbody = document.getElementById('bodyAssinaturas');
   if (!tbody) return;
@@ -24,6 +25,7 @@ export function ctrlRenderAssinaturas() {
     </tr>`).join('');
 }
 
+// Apaga uma assinatura após pedir confirmação ao usuário
 export function ctrlExcluirAssinatura(id) {
   if (!confirm('Cancelar esta assinatura?')) return;
   assinaturaServico.excluir(id);

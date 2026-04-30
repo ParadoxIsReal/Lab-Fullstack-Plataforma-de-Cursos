@@ -4,10 +4,12 @@ import { CursoServico } from '../servico/CursoServico.mjs';
 const categoriaServico = new CategoriaServico();
 const cursoServico = new CursoServico();
 
+// Retorna o elemento do modal de categoria
 function getModalCategoria() {
   return document.getElementById('modalCategoria');
 }
 
+// Muda o título e o botão do modal para editar ou criar categoria
 function atualizarTextoModalCategoria(edicao = false) {
   const modal = getModalCategoria();
   if (!modal) return;
@@ -25,11 +27,13 @@ function limparFormularioCategoria() {
   atualizarTextoModalCategoria(false);
 }
 
+// Abre o modal para criar uma nova categoria
 export function ctrlNovaCategoria() {
   limparFormularioCategoria();
   window.abrirModal('modalCategoria');
 }
 
+// Abre o modal já preenchido com os dados da categoria para edição
 export function ctrlEditarCategoria(id) {
   const categoria = categoriaServico.buscarPorId(id);
   if (!categoria) return;
@@ -42,6 +46,7 @@ export function ctrlEditarCategoria(id) {
   window.abrirModal('modalCategoria');
 }
 
+// Salva a categoria nova ou atualizada e atualiza a lista
 export function ctrlSalvarCategoria() {
   window.limparErro('erroCategoria');
 
@@ -68,6 +73,7 @@ export function ctrlSalvarCategoria() {
   }
 }
 
+// Preenche a tabela de categorias com os registros atuais
 export function ctrlRenderCategorias() {
   const tbody = document.getElementById('bodyCategorias');
   if (!tbody) return;
@@ -95,6 +101,7 @@ export function ctrlRenderCategorias() {
   }).join('');
 }
 
+// Remove a categoria após confirmação e atualiza a lista
 export function ctrlExcluirCategoria(id) {
   if (!confirm('Excluir esta categoria?')) return;
   categoriaServico.excluir(id);

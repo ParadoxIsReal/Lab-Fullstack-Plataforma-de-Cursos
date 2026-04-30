@@ -8,10 +8,12 @@ const categoriaServico = new CategoriaServico();
 const usuarioServico = new UsuarioServico();
 const moduloServico = new ModuloServico();
 
+// Retorna o modal de curso que está na página
 function getModalCurso() {
   return document.getElementById('modalCurso');
 }
 
+// Atualiza o título e o botão do modal de curso conforme criacao ou edicao
 function atualizarTextoModalCurso(edicao = false) {
   const modal = getModalCurso();
   if (!modal) return;
@@ -19,6 +21,7 @@ function atualizarTextoModalCurso(edicao = false) {
   modal.querySelector('.modal-footer .btn-primary').textContent = edicao ? 'Atualizar' : 'Salvar';
 }
 
+// Limpa todos os campos do formulário do curso
 function limparFormularioCurso() {
   const modal = getModalCurso();
   if (!modal) return;
@@ -35,11 +38,13 @@ function limparFormularioCurso() {
   atualizarTextoModalCurso(false);
 }
 
+// Prepara o modal para criar um novo curso
 export function ctrlNovoCurso() {
   limparFormularioCurso();
   window.abrirModal('modalCurso');
 }
 
+// Abre o modal de curso para edição de um curso existente
 export function ctrlEditarCurso(id) {
   const modal = getModalCurso();
   if (!modal) return;
@@ -48,6 +53,7 @@ export function ctrlEditarCurso(id) {
   window.abrirModal('modalCurso');
 }
 
+// Preenche o filtro de categorias na lista de cursos
 export function popularFiltroCategorias() {
   window.popularSelectOpts(
     'filtroCursoCategoria',
@@ -58,6 +64,7 @@ export function popularFiltroCategorias() {
   );
 }
 
+// Preenche as opções do modal de curso com instrutores e categorias
 export function popularModalCurso() {
   window.popularSelectOpts(
     'curInstrutor',
@@ -94,6 +101,7 @@ export function popularModalCurso() {
   atualizarTextoModalCurso(true);
 }
 
+// Salva um novo curso ou atualiza um curso existente
 export function ctrlSalvarCurso() {
   window.limparErro('erroCurso');
 
@@ -122,6 +130,7 @@ export function ctrlSalvarCurso() {
   }
 }
 
+// Mostra os cursos na tela, usando os filtros selecionados
 export function ctrlRenderCursos() {
   const grid = document.getElementById('gridCursos');
   if (!grid) return;
@@ -160,6 +169,7 @@ export function ctrlRenderCursos() {
     </div>`).join('');
 }
 
+// Remove um curso após a confirmação e atualiza a lista
 export function ctrlExcluirCurso(id) {
   if (!confirm('Excluir este curso?')) return;
   cursoServico.excluir(id);
@@ -168,10 +178,12 @@ export function ctrlExcluirCurso(id) {
   window.mostrarToast('Curso removido.', false);
 }
 
+// Preenche o filtro de módulos com os cursos disponíveis
 export function popularSelectModulos() {
   window.popularSelectOpts('filtroCursoModulos', cursoServico.listar(), curso => curso.ID_Curso, curso => curso.Titulo, 'Selecione um curso...');
 }
 
+// Preenche o filtro de aulas com os módulos existentes
 export function popularSelectAulasFiltro() {
   window.popularSelectOpts(
     'filtroModuloAulas',

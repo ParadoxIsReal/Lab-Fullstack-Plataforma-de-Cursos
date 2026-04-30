@@ -8,6 +8,7 @@ const matriculaServico = new MatriculaServico();
 const cursoServico = new CursoServico();
 const avaliacaoServico = new AvaliacaoServico();
 
+// Atualiza a lista de cursos quando um aluno é selecionado
 export function atualizarCursosAvaliacao() {
   const selectUsuario = document.getElementById('avalUsuario');
   if (!selectUsuario) return;
@@ -24,6 +25,7 @@ export function atualizarCursosAvaliacao() {
   window.popularSelectOpts('avalCurso', cursos, curso => curso.ID_Curso, curso => curso.Titulo, 'Selecione curso...');
 }
 
+// Prepara o modal de avaliação com alunos e cursos disponíveis
 export function popularModalAvaliacao() {
   const idsMatriculados = [...new Set(matriculaServico.listar().map(matricula => matricula.ID_Usuario))];
   const alunos = usuarioServico.listar().filter(usuario => idsMatriculados.includes(usuario.ID_Usuario));
@@ -33,6 +35,7 @@ export function popularModalAvaliacao() {
   document.getElementById('avalUsuario').onchange = atualizarCursosAvaliacao;
 }
 
+// Salva uma avaliação e atualiza a lista na tela
 export function ctrlSalvarAvaliacao() {
   window.limparErro('erroAvaliacao');
 
@@ -46,19 +49,20 @@ export function ctrlSalvarAvaliacao() {
     });
     window.fecharModal('modalAvaliacao');
     ctrlRenderAvaliacoes();
-    window.mostrarToast('Avaliacao registrada!');
+    window.mostrarToast('Avaliação registrada!');
   } catch (error) {
     window.mostrarErro('erroAvaliacao', error.message);
   }
 }
 
+// Mostra todas as avaliacoes na tabela da pagina
 export function ctrlRenderAvaliacoes() {
   const tbody = document.getElementById('bodyAvaliacoes');
   if (!tbody) return;
 
   const avaliacoes = avaliacaoServico.listar();
   if (avaliacoes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma avaliacao registrada.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma avaliação registrada.</td></tr>';
     return;
   }
 
@@ -75,8 +79,9 @@ export function ctrlRenderAvaliacoes() {
     </tr>`).join('');
 }
 
+// Remove a avaliacao selecionada e atualiza a lista
 export function ctrlExcluirAvaliacao(id) {
   avaliacaoServico.excluir(id);
   ctrlRenderAvaliacoes();
-  window.mostrarToast('Avaliacao removida.', false);
+  window.mostrarToast('Avaliação removida.', false);
 }

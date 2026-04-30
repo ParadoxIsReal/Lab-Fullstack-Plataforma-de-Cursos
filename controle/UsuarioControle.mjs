@@ -6,6 +6,7 @@ function getModalUsuario() {
   return document.getElementById('modalUsuario');
 }
 
+// Ajusta o título e o botão do modal de usuário para criar ou editar
 function atualizarTextoModalUsuario(edicao = false) {
   const modal = getModalUsuario();
   if (!modal) return;
@@ -13,7 +14,7 @@ function atualizarTextoModalUsuario(edicao = false) {
   modal.querySelector('.modal-footer .btn-primary').textContent = edicao ? 'Atualizar' : 'Salvar';
   const senhaInput = document.getElementById('uSenha');
   if (senhaInput) {
-    senhaInput.placeholder = edicao ? '(sem alteracao)' : 'Mínimo 8 caracteres';
+    senhaInput.placeholder = edicao ? '(sem alteração)' : 'Mínimo 8 caracteres';
   }
 }
 
@@ -28,11 +29,13 @@ function limparFormularioUsuario() {
   atualizarTextoModalUsuario(false);
 }
 
+// Abre o modal limpo para criar um novo usuário
 export function ctrlNovoUsuario() {
   limparFormularioUsuario();
   window.abrirModal('modalUsuario');
 }
 
+// Abre o modal para editar um usuário existente
 export function ctrlEditarUsuario(id) {
   const usuario = usuarioServico.buscarPorId(id);
   if (!usuario) return;
@@ -45,6 +48,7 @@ export function ctrlEditarUsuario(id) {
   window.abrirModal('modalUsuario');
 }
 
+// Salva os dados do usuário novo ou editado e recarrega a lista
 export function ctrlSalvarUsuario() {
   window.limparErro('erroUsuario');
 
@@ -66,13 +70,14 @@ export function ctrlSalvarUsuario() {
     ctrlRenderUsuarios(document.getElementById('searchUsuarios')?.value ?? '');
     window.renderDashboard();
     window.mostrarToast(editId
-      ? `Usuario "${usuario.NomeCompleto}" atualizado com sucesso!`
-      : `Usuario "${usuario.NomeCompleto}" cadastrado com sucesso!`);
+      ? `Usuário "${usuario.NomeCompleto}" atualizado com sucesso!`
+      : `Usuário "${usuario.NomeCompleto}" cadastrado com sucesso!`);
   } catch (error) {
     window.mostrarErro('erroUsuario', error.message);
   }
 }
 
+// Mostra os usuários na tabela, filtrando pelo texto buscado
 export function ctrlRenderUsuarios(filtro = '') {
   const tbody = document.getElementById('bodyUsuarios');
   if (!tbody) return;
@@ -97,10 +102,11 @@ export function ctrlRenderUsuarios(filtro = '') {
     </tr>`).join('');
 }
 
+// Exclui o usuário após confirmação e atualiza a lista
 export function ctrlExcluirUsuario(id) {
-  if (!confirm('Excluir este usuario?')) return;
+  if (!confirm('Excluir este usuário?')) return;
   usuarioServico.excluir(id);
   ctrlRenderUsuarios(document.getElementById('searchUsuarios')?.value ?? '');
   window.renderDashboard();
-  window.mostrarToast('Usuario removido.', false);
+  window.mostrarToast('Usuário removido.', false);
 }

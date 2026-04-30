@@ -6,10 +6,12 @@ const moduloServico = new ModuloServico();
 const cursoServico = new CursoServico();
 const aulaServico = new AulaServico();
 
+// Retorna o elemento do modal de módulo na página
 function getModalModulo() {
   return document.getElementById('modalModulo');
 }
 
+// Ajusta o texto do modal de módulo para criar ou editar
 function atualizarTextoModalModulo(edicao = false) {
   const modal = getModalModulo();
   if (!modal) return;
@@ -17,6 +19,7 @@ function atualizarTextoModalModulo(edicao = false) {
   modal.querySelector('.modal-footer .btn-success').textContent = edicao ? 'Atualizar' : 'Salvar';
 }
 
+// Limpa os campos do formulário do módulo e reseta o modal
 function limparFormularioModulo() {
   const modal = getModalModulo();
   if (!modal) return;
@@ -28,12 +31,14 @@ function limparFormularioModulo() {
   atualizarTextoModalModulo(false);
 }
 
+// Abre o modal para adicionar um novo módulo
 export function ctrlNovoModulo() {
   limparFormularioModulo();
   popularModalModulo();
   window.abrirModal('modalModulo');
 }
 
+// Carrega um módulo existente para edição no modal
 export function ctrlEditarModulo(id) {
   const modal = getModalModulo();
   if (!modal) return;
@@ -43,6 +48,7 @@ export function ctrlEditarModulo(id) {
   window.abrirModal('modalModulo');
 }
 
+// Preenche o modal de módulo com cursos e dados do módulo a editar
 export function popularModalModulo() {
   window.popularSelectOpts('modCurso', cursoServico.listar(), curso => curso.ID_Curso, curso => curso.Titulo, 'Selecione um curso...');
 
@@ -61,6 +67,7 @@ export function popularModalModulo() {
   atualizarTextoModalModulo(true);
 }
 
+// Salva o modulo novo ou atualizado e fecha o modal
 export function ctrlSalvarModulo() {
   window.limparErro('erroModulo');
 
@@ -85,6 +92,7 @@ export function ctrlSalvarModulo() {
   }
 }
 
+// Exibe os módulos do curso selecionado na tabela
 export function ctrlRenderModulos() {
   const tbody = document.getElementById('bodyModulos');
   const filtroCurso = document.getElementById('filtroCursoModulos');
@@ -117,6 +125,7 @@ export function ctrlRenderModulos() {
   }).join('');
 }
 
+// Exclui o modulo e atualiza os filtros e listas
 export function ctrlExcluirModulo(id) {
   if (!confirm('Excluir este modulo?')) return;
   moduloServico.excluirModulo(id);

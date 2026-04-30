@@ -12,6 +12,7 @@ const cursoServico = new CursoServico();
 const aulaServico = new AulaServico();
 const progressoServico = new ProgressoServico();
 
+// Atualiza as aulas disponíveis para o aluno selecionado
 export function atualizarAulasProgresso() {
   const selectUsuario = document.getElementById('progUsuario');
   if (!selectUsuario) return;
@@ -31,6 +32,7 @@ export function atualizarAulasProgresso() {
   window.popularSelectOpts('progAula', aulas, aula => aula.ID_Aula, aula => aula.Titulo, 'Selecione aula...');
 }
 
+// Preenche o modal de progresso com alunos e data de hoje
 export function popularModalProgresso() {
   const idsMatriculados = [...new Set(matriculaServico.listar().map(matricula => matricula.ID_Usuario))];
   const alunos = usuarioServico.listar().filter(usuario => idsMatriculados.includes(usuario.ID_Usuario));
@@ -40,6 +42,7 @@ export function popularModalProgresso() {
   document.getElementById('progUsuario').onchange = atualizarAulasProgresso;
 }
 
+// Salva o progresso do aluno e atualiza a lista
 export function ctrlSalvarProgresso() {
   window.limparErro('erroProgresso');
 
@@ -57,6 +60,7 @@ export function ctrlSalvarProgresso() {
   }
 }
 
+// Exibe o progresso de aulas na tabela da página
 export function ctrlRenderProgresso() {
   const tbody = document.getElementById('bodyProgresso');
   if (!tbody) return;
@@ -79,6 +83,7 @@ export function ctrlRenderProgresso() {
     </tr>`).join('');
 }
 
+// Remove o registro de progresso do aluno
 export function ctrlExcluirProgresso(idUsuario, idAula) {
   progressoServico.excluir(idUsuario, idAula);
   ctrlRenderProgresso();

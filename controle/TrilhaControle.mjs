@@ -8,10 +8,12 @@ const trilhaCursoServico = new TrilhaCursoServico();
 const categoriaServico = new CategoriaServico();
 const cursoServico = new CursoServico();
 
+// Retorna o modal de trilha da página
 function getModalTrilha() {
   return document.getElementById('modalTrilha');
 }
 
+// Ajusta o texto do modal de trilha para novo ou edição
 function atualizarTextoModalTrilha(edicao = false) {
   const modal = getModalTrilha();
   if (!modal) return;
@@ -33,11 +35,13 @@ function limparFormularioTrilha() {
   atualizarTextoModalTrilha(false);
 }
 
+// Abre o modal para criar uma trilha nova
 export function ctrlNovaTrilha() {
   limparFormularioTrilha();
   window.abrirModal('modalTrilha');
 }
 
+// Abre o modal para editar uma trilha existente
 export function ctrlEditarTrilha(id) {
   const modal = getModalTrilha();
   if (!modal) return;
@@ -46,6 +50,7 @@ export function ctrlEditarTrilha(id) {
   window.abrirModal('modalTrilha');
 }
 
+// Preenche o modal de trilha com cursos e categorias
 export function popularModalTrilha() {
   window.popularSelectOpts('trilhaCategoria', categoriaServico.listar(), categoria => categoria.ID_Categoria, categoria => categoria.Nome, '- Nenhuma -');
   window.popularSelectOpts('trilhaCursos', cursoServico.listar(), curso => curso.ID_Curso, curso => curso.Titulo, '');
@@ -70,6 +75,7 @@ export function popularModalTrilha() {
   atualizarTextoModalTrilha(true);
 }
 
+// Salva ou atualiza uma trilha com os cursos escolhidos
 export function ctrlSalvarTrilha() {
   window.limparErro('erroTrilha');
 
@@ -93,6 +99,7 @@ export function ctrlSalvarTrilha() {
   }
 }
 
+// Renderiza as trilhas em cards na página
 export function ctrlRenderTrilhas() {
   const grid = document.getElementById('gridTrilhas');
   if (!grid) return;
@@ -127,6 +134,7 @@ export function ctrlRenderTrilhas() {
   }).join('');
 }
 
+// Exclui a trilha selecionada e atualiza a lista
 export function ctrlExcluirTrilha(id) {
   if (!confirm('Excluir esta trilha?')) return;
   trilhaServico.excluir(id);

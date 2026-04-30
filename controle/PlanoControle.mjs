@@ -2,10 +2,12 @@ import { PlanoServico } from '../servico/PlanoServico.mjs';
 
 const planoServico = new PlanoServico();
 
+// Retorna o modal de plano usado na página
 function getModalPlano() {
   return document.getElementById('modalPlano');
 }
 
+// Altera os textos do modal de plano para edição ou criação
 function atualizarTextoModalPlano(edicao = false) {
   const modal = getModalPlano();
   if (!modal) return;
@@ -25,11 +27,13 @@ function limparFormularioPlano() {
   atualizarTextoModalPlano(false);
 }
 
+// Limpa e abre o modal para criar um novo plano
 export function ctrlNovoPlano() {
   limparFormularioPlano();
   window.abrirModal('modalPlano');
 }
 
+// Abre o modal com os dados de um plano para edição
 export function ctrlEditarPlano(id) {
   const plano = planoServico.buscarPorId(id);
   if (!plano) return;
@@ -44,6 +48,7 @@ export function ctrlEditarPlano(id) {
   window.abrirModal('modalPlano');
 }
 
+// Salva ou atualiza um plano e fecha o modal
 export function ctrlSalvarPlano() {
   window.limparErro('erroPlano');
 
@@ -67,6 +72,7 @@ export function ctrlSalvarPlano() {
   }
 }
 
+// Mostra todos os planos cadastrados na tela
 export function ctrlRenderPlanos() {
   const grid = document.getElementById('gridPlanos');
   if (!grid) return;
@@ -94,6 +100,7 @@ export function ctrlRenderPlanos() {
     </div>`).join('');
 }
 
+// Exclui o plano após a confirmacao e recarrega a lista
 export function ctrlExcluirPlano(id) {
   if (!confirm('Excluir este plano?')) return;
   planoServico.excluir(id);
