@@ -10,7 +10,7 @@ function atualizarTextoModalPlano(edicao = false) {
   const modal = getModalPlano();
   if (!modal) return;
   modal.querySelector('.modal-title').textContent = edicao ? 'Editar Plano' : 'Novo Plano';
-  modal.querySelector('.modal-footer .btn-primary').textContent = edicao ? 'Atualizar' : 'Salvar';
+  modal.querySelector('.modal-footer .btn-danger').textContent = edicao ? 'Atualizar' : 'Salvar';
 }
 
 function limparFormularioPlano() {

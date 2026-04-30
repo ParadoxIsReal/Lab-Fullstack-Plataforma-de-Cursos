@@ -66,7 +66,7 @@ export function ctrlRenderAvaliacoes() {
     <tr>
       <td>${window.getNomeUsuario(avaliacao.ID_Usuario)}</td>
       <td>${window.getNomeCurso(avaliacao.ID_Curso)}</td>
-      <td>${'&#9733;'.repeat(avaliacao.Nota)}${'&#9734;'.repeat(5 - avaliacao.Nota)}</td>
+      <td>${avaliacao.Nota}/10</td>
       <td>${avaliacao.Comentario || '-'}</td>
       <td>${window.formatarData(avaliacao.DataAvaliacao)}</td>
       <td>

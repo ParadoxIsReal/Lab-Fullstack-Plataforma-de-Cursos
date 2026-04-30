@@ -45,7 +45,7 @@ export class ModuloServico {
 
   excluirModulo(id) {
     const list = this.listarModulos().filter(modulo => Number(modulo.ID_Modulo) !== Number(id));
-    localStorage.setItem(MODULO_KEY, JSON.stringify(lista));
+    localStorage.setItem(MODULO_KEY, JSON.stringify(list));
   }
 
   #normalizarModulo(dados) {

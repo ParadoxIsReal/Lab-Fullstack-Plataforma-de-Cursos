@@ -18,7 +18,7 @@ export class AvaliacaoServico {
 
     if (!payload.ID_Usuario) throw new Error('Selecione um aluno.');
     if (!payload.ID_Curso) throw new Error('Selecione um curso.');
-    if (!payload.Nota || payload.Nota < 1 || payload.Nota > 5) throw new Error('Nota deve ser entre 1 e 5.');
+    if (!payload.Nota || payload.Nota < 0 || payload.Nota > 10) throw new Error('Nota deve ser entre 0 e 10.');
     if (!payload.DataAvaliacao) throw new Error('Data e obrigatoria.');
 
     const avaliacao = new Avaliacao({ ID_Avaliacao: this.#proximoId(), ...payload });

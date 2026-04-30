@@ -14,7 +14,7 @@ function atualizarTextoModalModulo(edicao = false) {
   const modal = getModalModulo();
   if (!modal) return;
   modal.querySelector('.modal-title').textContent = edicao ? 'Editar Módulo' : 'Novo Módulo';
-  modal.querySelector('.modal-footer .btn-primary').textContent = edicao ? 'Atualizar' : 'Salvar';
+  modal.querySelector('.modal-footer .btn-success').textContent = edicao ? 'Atualizar' : 'Salvar';
 }
 
 function limparFormularioModulo() {
@@ -30,6 +30,7 @@ function limparFormularioModulo() {
 
 export function ctrlNovoModulo() {
   limparFormularioModulo();
+  popularModalModulo();
   window.abrirModal('modalModulo');
 }
 
@@ -38,6 +39,7 @@ export function ctrlEditarModulo(id) {
   if (!modal) return;
   modal.dataset.editId = String(id);
   atualizarTextoModalModulo(true);
+  popularModalModulo();
   window.abrirModal('modalModulo');
 }
 

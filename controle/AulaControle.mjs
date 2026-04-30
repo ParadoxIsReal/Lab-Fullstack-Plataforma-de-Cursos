@@ -12,7 +12,7 @@ function atualizarTextoModalAula(edicao = false) {
   const modal = getModalAula();
   if (!modal) return;
   modal.querySelector('.modal-title').textContent = edicao ? 'Editar Aula' : 'Nova Aula';
-  modal.querySelector('.modal-footer .btn-primary').textContent = edicao ? 'Atualizar' : 'Salvar';
+  modal.querySelector('.modal-footer .btn-success').textContent = edicao ? 'Atualizar' : 'Salvar';
 }
 
 function limparFormularioAula() {

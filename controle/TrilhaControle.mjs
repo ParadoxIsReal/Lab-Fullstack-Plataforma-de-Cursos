@@ -16,7 +16,7 @@ function atualizarTextoModalTrilha(edicao = false) {
   const modal = getModalTrilha();
   if (!modal) return;
   modal.querySelector('.modal-title').textContent = edicao ? 'Editar Trilha' : 'Nova Trilha';
-  modal.querySelector('.modal-footer .btn-primary').textContent = edicao ? 'Atualizar' : 'Salvar';
+  modal.querySelector('.modal-footer .btn-info').textContent = edicao ? 'Atualizar' : 'Salvar';
 }
 
 function limparFormularioTrilha() {
